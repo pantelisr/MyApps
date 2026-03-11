@@ -103,14 +103,15 @@ with st.form("leave_form"):
         protocollo_aithshs = st.text_input("Αριθμός Πρωτοκόλλου Αίτησης")
         hmer_protocollou_aithshs = st.date_input("Ημερομηνία Πρωτοκόλλου Αίτησης",format="DD/MM/YYYY")    
         days_number = st.number_input("Αριθμός Ημερών", min_value=1, step=1)
-        arxh = st.date_input("Ημερομηνία Έναρξης",format="DD/MM/YYYY")
-        doctor = st.text_input("Γιατρός")
+        
         hmer_gnomateyshs = st.date_input("Ημερομηνία Γνωμάτευσης",format="DD/MM/YYYY")
     
     with col3:
         protocollo_adeias = st.text_input("Πρωτόκολλο Άδειας")
         hmer_protocollou = st.date_input("Ημερομηνία Πρωτοκόλλου Άδειας",format="DD/MM/YYYY")
+        arxh = st.date_input("Ημερομηνία Έναρξης",format="DD/MM/YYYY")
         telos = arxh + timedelta(days=days_number - 1)
+        doctor = st.text_input("Γιατρός")
           
     
     submitted = st.form_submit_button("Δημιουργία Εγγράφου")
