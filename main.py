@@ -1,4 +1,3 @@
-from flask import Flask
 import streamlit as st
 from docxtpl import DocxTemplate
 import io
@@ -11,16 +10,6 @@ import pandas as pd
 import os
 
 st.set_page_config(layout="wide")
-
-app = Flask(__name__) # <--- Αυτό ψάχνει ο gunicorn
-
-@app.route('/')
-def home():
-    return "Η εφαρμογή έκδοσης αδειών είναι online!"
-
-if __name__ == "__main__":
-    # Αυτό τρέχει μόνο τοπικά στο PC σου
-    app.run(debug=True)
 
 NUM_TO_GREEK = {
     1: "μίας ημέρας (1)", 2: "δύο ημερών (2)", 3: "τριών ημερών (3)", 4: "τεσσάρων ημερών (4)", 5: "πέντε ημερών (5)",
