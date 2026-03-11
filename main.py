@@ -12,13 +12,13 @@ import os
 
 st.set_page_config(layout="wide")
 
-app = Flask(__adeies__) # <--- Αυτό ψάχνει ο gunicorn
+app = Flask(__name__) # <--- Αυτό ψάχνει ο gunicorn
 
 @app.route('/')
 def home():
     return "Η εφαρμογή έκδοσης αδειών είναι online!"
 
-if __adeies__ == "__main__":
+if __name__ == "__main__":
     # Αυτό τρέχει μόνο τοπικά στο PC σου
     app.run(debug=True)
 
