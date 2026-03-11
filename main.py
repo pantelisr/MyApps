@@ -111,7 +111,6 @@ with st.form("leave_form"):
         protocollo_adeias = st.text_input("Πρωτόκολλο Άδειας")
         hmer_protocollou = st.date_input("Ημερομηνία Πρωτοκόλλου Άδειας",format="DD/MM/YYYY")
         telos = arxh + timedelta(days=days_number - 1)
-        st.info(f"📅 Η άδεια λήγει στις: {hmerominia_lixis.strftime('%d/%m/%Y')}")
           
     
     submitted = st.form_submit_button("Δημιουργία Εγγράφου")
