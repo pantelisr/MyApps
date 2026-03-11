@@ -3,6 +3,8 @@ from docxtpl import DocxTemplate
 import io
 from datetime import datetime
 
+from datetime import timedelta
+
 import pandas as pd
 
 import os
@@ -102,13 +104,14 @@ with st.form("leave_form"):
         hmer_protocollou_aithshs = st.date_input("Ημερομηνία Πρωτοκόλλου Αίτησης",format="DD/MM/YYYY")    
         days_number = st.number_input("Αριθμός Ημερών", min_value=1, step=1)
         arxh = st.date_input("Ημερομηνία Έναρξης",format="DD/MM/YYYY")
-        telos = st.date_input("Ημερομηνία Λήξης",format="DD/MM/YYYY")
         doctor = st.text_input("Γιατρός")
         hmer_gnomateyshs = st.date_input("Ημερομηνία Γνωμάτευσης",format="DD/MM/YYYY")
     
     with col3:
         protocollo_adeias = st.text_input("Πρωτόκολλο Άδειας")
         hmer_protocollou = st.date_input("Ημερομηνία Πρωτοκόλλου Άδειας",format="DD/MM/YYYY")
+        telos = arxh + timedelta(days=days_number - 1)
+        st.info(f"📅 Η άδεια λήγει στις: {hmerominia_lixis.strftime('%d/%m/%Y')}")
           
     
     submitted = st.form_submit_button("Δημιουργία Εγγράφου")
