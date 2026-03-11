@@ -100,7 +100,6 @@ with st.form("leave_form"):
     with col2:     
         protocollo_aithshs = st.text_input("Αριθμός Πρωτοκόλλου Αίτησης")
         hmer_protocollou_aithshs = st.date_input("Ημερομηνία Πρωτοκόλλου Αίτησης",format="DD/MM/YYYY")    
-        days_lektiko = st.text_input("Πόσες ημέρες")
         days_number = st.number_input("Αριθμός Ημερών", min_value=1, step=1)
         arxh = st.date_input("Ημερομηνία Έναρξης",format="DD/MM/YYYY")
         telos = st.date_input("Ημερομηνία Λήξης",format="DD/MM/YYYY")
@@ -121,18 +120,21 @@ if submitted:
         try:
             # Φόρτωση από τη διαδρομή του φακέλου templates
             doc = DocxTemplate(template_path)
+            days_lektiko = NUM_TO_GREEK.get(days_number, str(days_number))
             # Δεδομένα για το "γέμισμα" του εγγράφου
             context = {
                 'eponymo': eponymo,
                 'onoma': onoma,
                 'hmer_protocollou': hmer_protocollou.strftime("%d/%m/%Y"),
                 'protocollo_adeias' : protocollo_adeias,
-                'hmer_protocollou_aithshs': hmer_protocollou_aithshs.strftime("%d/%m/%Y"),
+                'hmer_protocollou_aithshs': hmer_protocollou_aithshs.strftime("%d-%m-%Y"),
                 'protocollo_aithshs' : protocollo_aithshs,
                 'klados' : klados,
                 'mitrwo' : mitrwo,
                 'days_number': days_number,
                 'days_lektiko' : days_lektiko,
+                'doctor' : doctor,
+                'hmer_gnomateyshs' : hmer_gnomateyshs.strftime("%d/%m/%Y"),
                 'arxh': arxh.strftime("%d/%m/%Y"),
                 'telos': telos.strftime("%d/%m/%Y"),
                 'hmerominia_ekdosis': datetime.now().strftime("%d/%m/%Y")
