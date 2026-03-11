@@ -7,6 +7,12 @@ import pandas as pd
 
 import os
 
+NUM_TO_GREEK = {
+    1: "μίας ημέρας (1)", 2: "δύο ημερών (2)", 3: "τριών ημερών (3)", 4: "τεσσάρων ημερών (4)", 5: "πέντε ημερών (5)",
+    6: "έξι ημερών (6)", 7: "επτά ημερών (7)", 8: "οκτώ ημερών (8)", 9: "εννέα ημερών (9)", 10: "δέκα ημερών (10)",
+}
+
+
 def save_to_log(data):
     file_path = "log_adeies.xlsx"
     # Μετατρέπουμε τα δεδομένα σε πίνακα (DataFrame)
@@ -26,7 +32,10 @@ def save_to_log(data):
 def load_teachers():
     try:
         # Διαβάζει το Excel
-        df = pd.read_excel("teachers.xlsx")
+        df = pd.read_excel("teachers.xlsx",dtype={'mitrwo': str})
+
+        # Δεν υπάρχουν NaN που γίνονται "nan"
+        df['mitrwo'] = df['mitrwo'].fillna('')
         
         # Μετατρέπει το DataFrame σε ένα dictionary που μπορεί να χρησιμοποιήσει το Streamlit
         # Χρησιμοποιούμε το 'full_name' ως κλειδί
@@ -38,10 +47,33 @@ def load_teachers():
 
 EKPAIDEYTIKOI_DATA = load_teachers()
 
-# Δημιουργία της λίστας για το selectbox (προσθέτουμε μια κενή επιλογή στην αρχή)
+st.title("📝 Έκδοση Άδειας Εκπαιδευτικού")
+
+# --- 1. Δημιουργία της λίστας για το selectbox (μια κενή επιλογή στην αρχή)
 teacher_options = ["Επιλέξτε Εκπαιδευτικό"] + list(EKPAIDEYTIKOI_DATA.keys())
 
 selected_name = st.selectbox("Αναζήτηση Εκπαιδευτικού", options=teacher_options)
+
+# --- 2. ΕΠΙΛΟΓΗ ΠΡΟΤΥΠΟΥ ΑΠΟ ΤΟΝ ΦΑΚΕΛΟ /templates ---
+TEMPLATE_FOLDER = "templates"
+
+# Δημιουργία του φακέλου αν δεν υπάρχει (για αποφυγή σφαλμάτων)
+if not os.path.exists(TEMPLATE_FOLDER):
+    os.makedirs(TEMPLATE_FOLDER)
+
+# Λίστα με τα διαθέσιμα πρότυπα μέσα στον φάκελο
+available_templates = ["-- Επιλέξτε το Έγγραφο της Άδειας --"] + [f for f in os.listdir(TEMPLATE_FOLDER) if f.endswith('.docx')]
+
+
+if available_templates:
+    selected_template_name = st.selectbox("2. Επιλέξτε το έντυπο προς έκδοση:", options=available_templates)
+    template_path = os.path.join(TEMPLATE_FOLDER, selected_template_name)
+else:
+    st.warning("⚠️ Δεν βρέθηκαν αρχεία .docx στον φάκελο /templates. Παρακαλώ προσθέστε τα πρότυπά σας εκεί.")
+    template_path = None
+
+st.divider() # Μια οριζόντια γραμμή για να ξεχωρίζει η προετοιμασία από τη φόρμα
+
 
 # Ανάκτηση στοιχείων
 if selected_name != "Επιλέξτε Εκπαιδευτικό":
@@ -52,7 +84,6 @@ else:
 # Ρύθμιση σελίδας
 st.set_page_config(page_title="Αυτοματοποίηση Αδειών Σχολείου", page_icon="📝")
 
-st.title("📝 Έκδοση Άδειας Εκπαιδευτικού")
 st.subheader("Συμπληρώστε τα στοιχεία για την παραγωγή του εγγράφου")
 
 # Φόρμα Εισαγωγής Στοιχείων
@@ -64,51 +95,42 @@ with st.form("leave_form"):
         onoma = st.text_input("Όνομα ", value=teacher_data["onoma"])
         klados = st.text_input("Κλάδος ", value=teacher_data["klados"])
         mitrwo = st.text_input("ΑΜ ", value=teacher_data["mitrwo"])
-        protocollo_aithshs = st.text_input("Αριθμός Πρωτοκόλλου Αίτησης")
-        hmer_protocollou_aithshs = st.date_input("Ημερομηνία Πρωτοκόλλου Αίτησης")
+        
         
     with col2:     
-        protocollo_adeias = st.text_input("Πρωτόκολλο Άδειας")
-        hmer_protocollou = st.date_input("Ημερομηνία Πρωτοκόλλου Άδειας")
-        typos_adeias = st.selectbox("Τύπος Άδειας", 
-                                  ["Κανονική πολλών ημερών", 
-                                   "Κανονική μίας ημέρας", 
-                                   "Αναρρωτική με ΥΔ", 
-                                   "Αναρρωτική με Ιατρική γνωμάτευση", 
-                                   "Ασθενείας τέκνου"])
-        
-        doctor = st.text_input("Γιατρός")
-    
-    with col3:
+        protocollo_aithshs = st.text_input("Αριθμός Πρωτοκόλλου Αίτησης")
+        hmer_protocollou_aithshs = st.date_input("Ημερομηνία Πρωτοκόλλου Αίτησης",format="DD/MM/YYYY")    
         days_lektiko = st.text_input("Πόσες ημέρες")
         days_number = st.number_input("Αριθμός Ημερών", min_value=1, step=1)
-        arxh = st.date_input("Ημερομηνία Έναρξης")
-        telos = st.date_input("Ημερομηνία Λήξης")
-
-    # Ανέβασμα του προτύπου Word (προαιρετικά αν δεν το έχεις στον ίδιο φάκελο)
-    template_file = st.file_uploader("Ανεβάστε το πρότυπο Word (.docx)", type=["docx"])
+        arxh = st.date_input("Ημερομηνία Έναρξης",format="DD/MM/YYYY")
+        telos = st.date_input("Ημερομηνία Λήξης",format="DD/MM/YYYY")
+        doctor = st.text_input("Γιατρός")
+        hmer_gnomateyshs = st.date_input("Ημερομηνία Γνωμάτευσης",format="DD/MM/YYYY")
+    
+    with col3:
+        protocollo_adeias = st.text_input("Πρωτόκολλο Άδειας")
+        hmer_protocollou = st.date_input("Ημερομηνία Πρωτοκόλλου Άδειας",format="DD/MM/YYYY")
+          
     
     submitted = st.form_submit_button("Δημιουργία Εγγράφου")
 
 if submitted:
-    if not template_file:
-        st.error("Παρακαλώ ανεβάστε το πρότυπο .docx αρχείο πρώτα.")
+    if not template_path:
+        st.error("⚠️ Δεν έχει επιλεγεί πρότυπο αρχείο!")
     else:
         try:
-            # Δημιουργία αντικειμένου Word από το template
-            doc = DocxTemplate(template_file)
-            
+            # Φόρτωση από τη διαδρομή του φακέλου templates
+            doc = DocxTemplate(template_path)
             # Δεδομένα για το "γέμισμα" του εγγράφου
             context = {
                 'eponymo': eponymo,
                 'onoma': onoma,
-                'hmer_protocollou': hmer_protocollou,
+                'hmer_protocollou': hmer_protocollou.strftime("%d/%m/%Y"),
                 'protocollo_adeias' : protocollo_adeias,
-                'hmer_protocollou_aithshs' : hmer_protocollou_aithshs,
+                'hmer_protocollou_aithshs': hmer_protocollou_aithshs.strftime("%d/%m/%Y"),
                 'protocollo_aithshs' : protocollo_aithshs,
                 'klados' : klados,
                 'mitrwo' : mitrwo,
-                'typos_adeias': typos_adeias,
                 'days_number': days_number,
                 'days_lektiko' : days_lektiko,
                 'arxh': arxh.strftime("%d/%m/%Y"),
@@ -125,7 +147,6 @@ if submitted:
             'Επώνυμο': eponymo,
             'Όνομα': onoma,
             'Κλάδος': klados,
-            'Τύπος Άδειας': typos_adeias,
             'Ημέρες': days_number,
             'Πρωτόκολλο': protocollo_adeias,
             'Ημερομηνία πρωτοκόλλου άδειας' : hmer_protocollou
