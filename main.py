@@ -95,22 +95,22 @@ st.subheader("Στοιχεία Άδειας")
 col1, col2, col3, col4 = st.columns(4)
     
 with col1:
-        eponymo = st.text_input("Επώνυμο", value=teacher_data["eponymo"])
+        eponymo = st.text_input("Επώνυμο", value=teacher_data["eponymo"], disabled=True)
         
 with col2:     
-        onoma = st.text_input("Όνομα ", value=teacher_data["onoma"])
+        onoma = st.text_input("Όνομα ", value=teacher_data["onoma"], disabled=True)
         hmer_protocollou_aithshs = st.date_input("Ημερομηνία Πρωτοκόλλου Αίτησης",format="DD/MM/YYYY")
         days_number = st.number_input("Αριθμός Ημερών", min_value=1, step=1)
         hmer_gnomateyshs = st.date_input("Ημερομηνία Γνωμάτευσης",format="DD/MM/YYYY")
         
 with col3:
-        mitrwo = st.text_input("ΑΜ ", value=teacher_data["mitrwo"])
+        mitrwo = st.text_input("ΑΜ ", value=teacher_data["mitrwo"],disabled=True)
         protocollo_aithshs = st.text_input("Αριθμός Πρωτοκόλλου Αίτησης")
         arxh = st.date_input("Ημερομηνία Έναρξης",format="DD/MM/YYYY")
         doctor = st.text_input("Γιατρός")
         
 with col4:
-        klados = st.text_input("Κλάδος ", value=teacher_data["klados"])
+        klados = st.text_input("Κλάδος ", value=teacher_data["klados"], disabled=True)
         telos = arxh + timedelta(days=days_number - 1)
         st.markdown("<div style='height: 59px; margin-bottom: 24px;'></div>", unsafe_allow_html=True)        
         days_lektiko = NUM_TO_GREEK.get(days_number, str(days_number))
