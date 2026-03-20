@@ -154,15 +154,16 @@ if submitted or st.session_state.form_done:
             
             arithmos_meras = arxh.weekday()
             onoma_meras1 = meres_evdomadas[arithmos_meras]
-
-            full_enarksi_text = f"{onoma_meras1}, {arxh.strftime('%d/%m/%Y')}"
+            
 
             if days_number > 1:    
                 arithmos_meras = telos.weekday()
                 onoma_meras2 = meres_evdomadas[arithmos_meras]
-                full_lhxh_text = f"{onoma_meras2}, {telos.strftime('%d/%m/%Y')}"
+                full_enarksi_text = f"από την {onoma_meras1}, {arxh.strftime('%d/%m/%Y')}"
+                full_lhxh_text = f"έως και την {onoma_meras2}, {telos.strftime('%d/%m/%Y')}"
             else:
-                 full_lhxh_text =""
+                full_enarksi_text = f"την {onoma_meras1}, {arxh.strftime('%d/%m/%Y')}"
+                full_lhxh_text =""
                 
             # Δεδομένα για το "γέμισμα" του εγγράφου
             context = {
