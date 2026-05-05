@@ -3,6 +3,9 @@ from docxtpl import DocxTemplate
 
 import io
 
+import pypandoc
+import subprocess
+
 from datetime import datetime
 from datetime import timedelta
 from docx2pdf import convert
@@ -224,35 +227,56 @@ if submitted or st.session_state.form_done:
             st.write("---")
             st.subheader("Επιπλέον επιλογές")
             
-            if st.button("📄 Δημιουργία PDF (απαιτεί Microsoft Word)"):
-                with st.spinner("Γίνεται μετατροπή σε PDF... παρακαλώ περιμένετε..."):
-                    try:
-                        temp_word = os.path.abspath(f"temp_{eponymo}.docx")
-                        temp_pdf = os.path.abspath(f"temp_{eponymo}.pdf")
-                        
-                        # Σώζουμε το Word από τη μνήμη στον δίσκο για να το δει η docx2pdf
-                        with open(temp_word, "wb") as f:
-                            f.write(target_stream.getbuffer())
-                        
-                        convert(temp_word, temp_pdf)
-                        
-                        # Εμφάνιση του τελικού κουμπιού λήψης για το PDF
-                        if os.path.exists(temp_pdf):
-                            with open(temp_pdf, "rb") as pdf_file:
-                                st.download_button(
-                                    label="✅ Λήψη έτοιμου PDF",
-                                    data=pdf_file.read(),
-                                    file_name=f"Adeia_{eponymo}_{protocollo_adeias.replace('/', '-')}.pdf",
-                                    mime="application/pdf"
-                                )
-                            
-                            # Καθαρισμός προσωρινών αρχείων
-                            os.remove(temp_word)
-                            os.remove(temp_pdf)
-                        
-                    except Exception as e:
-                        st.error(f"❌ Αποτυχία μετατροπής: {e}")
-                        st.info("Βεβαιωθείτε ότι το Microsoft Word είναι εγκατεστημένο και κλειστό.")
+            if st.button("📄 Δημιουργία PDF"):
+    with st.spinner("Γίνεται μετατροπή σε PDF... παρακαλώ περιμένετε..."):
+        # Ορίζουμε τα ονόματα των προσωρινών αρχείων
+        temp_word = f"temp_{eponymo}.docx"
+        temp_pdf = f"temp_{eponymo}.pdf"
+        
+        try:
+            # 1. Έλεγχος αν υπάρχει το pandoc (κυρίως για τοπική χρήση)
+            try:
+                pypandoc.get_pandoc_version()
+            except OSError:
+                # Αν λείπει, το κατεβάζει αυτόματα (χρειάζεται μόνο την 1η φορά τοπικά)
+                pypandoc.download_pandoc()
+
+            # 2. Αποθήκευση του Word από τη μνήμη στον δίσκο
+            with open(temp_word, "wb") as f:
+                f.write(target_stream.getbuffer())
+
+            # 3. Μετατροπή DOCX σε PDF
+            # Χρησιμοποιούμε το xelatex για καλύτερη υποστήριξη ελληνικών στο Linux/Cloud
+            pypandoc.convert_file(
+                temp_word, 
+                'pdf', 
+                outputfile=temp_pdf,
+                extra_args=['--pdf-engine=xelatex']
+            )
+
+            # 4. Εμφάνιση του κουμπιού λήψης αν όλα πήγαν καλά
+            if os.path.exists(temp_pdf):
+                with open(temp_pdf, "rb") as pdf_file:
+                    st.download_button(
+                        label="✅ Λήψη έτοιμου PDF",
+                        data=pdf_file.read(),
+                        file_name=f"Adeia_{eponymo}_{protocollo_adeias.replace('/', '-')}.pdf",
+                        mime="application/pdf"
+                    )
+                
+                # Καθαρισμός αρχείων μετά τη χρήση
+                os.remove(temp_word)
+                os.remove(temp_pdf)
+            else:
+                st.error("❌ Το PDF δεν δημιουργήθηκε. Ελέγξτε τα log της εφαρμογής.")
+
+        except Exception as e:
+            st.error(f"❌ Αποτυχία μετατροπής: {e}")
+            st.info("Σημείωση: Στο Cloud απαιτείται η ύπαρξη των αρχείων packages.txt και requirements.txt.")
+            
+            # Καθαρισμός αν κάτι πήγε στραβά
+            if os.path.exists(temp_word): os.remove(temp_word)
+            if os.path.exists(temp_pdf): os.remove(temp_pdf)
 
 
             
