@@ -52,7 +52,6 @@ def load_teachers():
         # Διαβάζει το Excel
         df = pd.read_excel("teachers.xlsx",dtype={'mitrwo': str})
 
-        # Δεν υπάρχουν NaN που γίνονται "nan"
         df['mitrwo'] = df['mitrwo'].fillna('')
         
         # Μετατρέπει το DataFrame σε ένα dictionary που μπορεί να χρησιμοποιήσει το Streamlit
@@ -134,7 +133,8 @@ with col4:
         st.markdown("<div style='height: 59px; margin-bottom: 24px;'></div>", unsafe_allow_html=True)        
         days_lektiko = NUM_TO_GREEK.get(days_number, str(days_number))
         st.text_input("Ημερομηνία Λήξης Άδειας", value=telos.strftime('%d/%m/%Y'), disabled=True)
-        
+     
+
 st.divider()
 with st.form("leave_form"):     
     st.subheader("Στοιχεία Πρωτοκόλλου Άδειας")
@@ -173,8 +173,8 @@ if submitted or st.session_state.form_done:
             context = {
                 'eponymo': eponymo,
                 'onoma': onoma,
-                'eponymo_gen': eponymo_gen,
-                'onoma_gen': onoma_gen,
+                'eponymo_gen': teacher_data["eponymo_gen"],
+                'onoma_gen': teacher_data["onoma_gen"],
                 'hmer_protocollou': hmer_protocollou.strftime("%d/%m/%Y"),
                 'protocollo_adeias' : protocollo_adeias,
                 'hmer_protocollou_aithshs': hmer_protocollou_aithshs.strftime("%d-%m-%Y"),
