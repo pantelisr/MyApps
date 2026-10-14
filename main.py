@@ -98,6 +98,7 @@ if selected_name != "-- Επιλέξτε Εκπαιδευτικό --":
     teacher_data = EKPAIDEYTIKOI_DATA[selected_name]
 else:
     teacher_data = {"eponymo": "", "onoma": "", "eponymo_gen": "", "onoma_gen": "", "klados": "", "mitrwo": "", "email": ""}
+    
 
 # Ρύθμιση σελίδας
 st.set_page_config(page_title="Αυτοματοποίηση Αδειών Σχολείου", page_icon="📝")
