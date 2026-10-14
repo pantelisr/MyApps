@@ -118,7 +118,7 @@ with col1:
 with col2:     
         protocollo_aithshs = st.text_input("Αριθμός Πρωτοκόλλου Αίτησης")
         days_number = st.number_input("Αριθμός Ημερών", min_value=1, step=1)
-        doctor = st.text_input("Γιατρός")
+        doctor = st.text_input("Γιατρός (γεν.)")
 
 with col3:
         hmer_protocollou_aithshs = st.date_input("Ημερομηνία Πρωτοκόλλου Αίτησης",format="DD/MM/YYYY")
