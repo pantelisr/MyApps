@@ -61,7 +61,7 @@ def load_teachers():
         return data
     except Exception as e:
         st.error(f"Σφάλμα κατά τη φόρτωση του αρχείου Excel: {e}")
-        return {"Επιλέξτε...": {"eponymo": "", "onoma": "", "klados": "", "mitrwo": "", "email": ""}}
+        return {"Επιλέξτε...": {"eponymo": "", "onoma": "", "eponymo_gen": "", "onoma_gen": "", "klados": "", "mitrwo": "", "email": ""}}
 
 EKPAIDEYTIKOI_DATA = load_teachers()
 
