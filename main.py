@@ -97,7 +97,7 @@ st.divider() # Μια οριζόντια γραμμή για να ξεχωρίζ
 if selected_name != "-- Επιλέξτε Εκπαιδευτικό --":
     teacher_data = EKPAIDEYTIKOI_DATA[selected_name]
 else:
-    teacher_data = {"eponymo": "", "onoma": "", "klados": "","mitrwo": "", "email": ""}
+    teacher_data = {"eponymo": "", "onoma": "", "eponymo_gen": "", "onoma_gen": "", "klados": "", "mitrwo": "", "email": ""}
 
 # Ρύθμιση σελίδας
 st.set_page_config(page_title="Αυτοματοποίηση Αδειών Σχολείου", page_icon="📝")
@@ -172,6 +172,8 @@ if submitted or st.session_state.form_done:
             context = {
                 'eponymo': eponymo,
                 'onoma': onoma,
+                'eponymo_gen': eponymo_gen,
+                'onoma_gen': onoma_gen,
                 'hmer_protocollou': hmer_protocollou.strftime("%d/%m/%Y"),
                 'protocollo_adeias' : protocollo_adeias,
                 'hmer_protocollou_aithshs': hmer_protocollou_aithshs.strftime("%d-%m-%Y"),
